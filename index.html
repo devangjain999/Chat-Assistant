@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Chat Assistant</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+</head>
+<body>
+  
+
+
+  <header class="header">
+    <span class="logo">🤖 Chat Assistant</span>
+    <div class="header-controls">
+      <button onclick="logout()" title="Logout" aria-label="Logout">
+  <span class="material-icons">logout</span>
+</button>
+
+      <button id="toggleTheme" title="Toggle Dark Mode" aria-label="Toggle Light/Dark Mode">
+        <span class="material-icons">brightness_6</span>
+      </button>
+      <button id="clearChat" title="Clear Chat" aria-label="Clear Chat">
+        <span class="material-icons">delete</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="chatbox" class="chatbox" role="log" aria-live="polite">
+      <div id="welcomeMessage" class="welcome-message">
+        <div class="welcome-icon">💬</div>
+        <h3>Welcome to Smart Chat Assistant!</h3>
+        <p>Start a conversation by typing a message or using the microphone button.</p>
+        <p>Try asking me anything - I'm here to help! 🤖</p>
+      </div>
+    </section>
+
+    <div class="input-area">
+      <button id="voiceButton" title="Voice Input" aria-label="Voice Input">
+        <span class="material-icons">mic</span>
+      </button>
+      <span id="listeningIndicator" class="listening-indicator" aria-live="polite">Listening...</span>
+      <input id="chatInput" type="text" placeholder="Type your message or use voice..." aria-label="Chat Input" />
+      <button id="sendButton" title="Send Message" aria-label="Send Message">
+        <span class="material-icons">send</span>
+      </button>
+    </div>
+    <div id="typingIndicator" class="typing-indicator" aria-live="polite">Bot is typing...</div>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
