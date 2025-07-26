@@ -1,4 +1,6 @@
-// backend/backend.js
+// Load environment variables from .env file
+require('dotenv').config();
+
 const express = require('express');
 const fetch = require('node-fetch');
 const cors = require('cors');
@@ -6,20 +8,25 @@ const cors = require('cors');
 const app = express();
 const port = 3000;
 
-// Middleware to enable Cross-Origin Resource Sharing and parse JSON
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Your secret API key. Keep this on the server.
-const apiKey = "v1-Z0FBQUFBQm5HUEtMSjJkakVjcF9IQ0M0VFhRQ0FmSnNDSHNYTlJSblE0UXo1Q3RBcjFPcl9YYy1OZUhteDZWekxHdWRLM1M1alNZTkJMWEhNOWd4S1NPSDBTWC12M0U2UGc9PQ=="; // Stays in the backend
+// Securely get the API key from environment variables
+const apiKey = process.env.API_KEY;
 const llmApiUrl = `https://backend.buildpicoapps.com/aero/run/llm-api?pk=${apiKey}`;
 
-// Define a route to handle chat requests
+// Route to handle chat messages
 app.post('/chat', async (req, res) => {
     const { prompt } = req.body;
 
     if (!prompt) {
         return res.status(400).json({ error: 'Prompt is required' });
+    }
+
+    // Check if the API key is loaded
+    if (!apiKey) {
+        return res.status(500).json({ error: 'API key not configured on the server.' });
     }
 
     try {
