@@ -100,8 +100,25 @@ if (recognition) {
 // === Speech Output ===
 function speak(text) {
   const utterance = new SpeechSynthesisUtterance(text);
+  
+  // Show the stop button when speech starts
+  utterance.onstart = () => {
+    stopSpeechButton.style.display = "block";
+  };
+
+  // Hide the stop button when speech ends
+  utterance.onend = () => {
+    stopSpeechButton.style.display = "none";
+  };
+
   speechSynthesis.speak(utterance);
 }
+
+// === Add listener for the new stop button ===
+stopSpeechButton.addEventListener("click", () => {
+  speechSynthesis.cancel(); // Immediately stops speech
+  stopSpeechButton.style.display = "none";
+});
 
 // === Send Message ===
 sendButton.addEventListener("click", async () => {
