@@ -4,6 +4,7 @@ const chatInput = document.getElementById("chatInput");
 const sendButton = document.getElementById("sendButton");
 const clearButton = document.getElementById("clearChat");
 const voiceButton = document.getElementById("voiceButton");
+const muteButton = document.getElementById("muteButton");
 const themeToggle = document.getElementById("toggleTheme");
 const typingIndicator = document.getElementById("typingIndicator");
 const listeningIndicator = document.getElementById("listeningIndicator");
@@ -12,6 +13,8 @@ const welcomeMessage = document.getElementById("welcomeMessage");
 // === API Keys (replace with your own if needed) ===
 const apiKey = "v1-Z0FBQUFBQm5HUEtMSjJkakVjcF9IQ0M0VFhRQ0FmSnNDSHNYTlJSblE0UXo1Q3RBcjFPcl9YYy1OZUhteDZWekxHdWRLM1M1alNZTkJMWEhNOWd4S1NPSDBTWC12M0U2UGc9PQ==";
 const defaultAPI = `https://backend.buildpicoapps.com/aero/run/llm-api?pk=${apiKey}`;
+
+let isMuted = localStorage.getItem("isMuted") === "true" || false;
 
 // === Welcome Message Management ===
 function showWelcomeMessage() {
@@ -99,6 +102,7 @@ if (recognition) {
 
 // === Speech Output ===
 function speak(text) {
+  if (isMuted) return; // Don't speak if muted
   const utterance = new SpeechSynthesisUtterance(text);
   speechSynthesis.speak(utterance);
 }
@@ -155,9 +159,28 @@ function toggleTheme() {
   localStorage.setItem("theme", newTheme);
 }
 
+function updateMuteButton() {
+  const muteIcon = muteButton.querySelector('.material-icons');
+  muteIcon.textContent = isMuted ? 'volume_off' : 'volume_up';
+  muteButton.title = isMuted ? 'Unmute Sound' : 'Mute Sound';
+  muteButton.setAttribute('aria-label', isMuted ? 'Unmute Sound' : 'Mute Sound');
+}
+
+function toggleMute() {
+  isMuted = !isMuted;
+  localStorage.setItem("isMuted", isMuted.toString());
+  updateMuteButton();
+  
+  if (isMuted) {
+    speechSynthesis.cancel();
+  }
+}
+
 themeToggle.addEventListener("click", toggleTheme);
+muteButton.addEventListener("click", toggleMute);
 window.addEventListener("DOMContentLoaded", () => {
   applySavedTheme();
+  updateMuteButton(); 
   loadHistory();
   checkWelcomeVisibility();
 });
