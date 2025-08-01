@@ -2,7 +2,6 @@
 
 A sleek, responsive, and voice-enabled web-based chat assistant powered by a Large Language Model (LLM) API. This project integrates a modern UI, dark mode toggle, voice input/output, chat history via local storage, and real-time typing indicators — delivering a truly intuitive and engaging assistant right in your browser.
 
----
 
 ## 🚀 Features
 
@@ -15,7 +14,6 @@ A sleek, responsive, and voice-enabled web-based chat assistant powered by a Lar
 - 🧹 One-click chat clear button
 - 🧠 Typing animation/indicator for real-time feedback
 
----
 
 ## 📁 Project Structure
 Smart-Chat-Assistant/
@@ -34,7 +32,6 @@ Smart-Chat-Assistant/
 
 └── README.md # This project documentation
 
----
 
 ## ⚙️ Setup & Usage
 
@@ -43,9 +40,8 @@ Smart-Chat-Assistant/
 - A modern browser (Chrome recommended for best compatibility with speech features)
 - A valid LLM API key (free/public/private)
 
----
 
-### 🚀 Getting Started
+## 🚀 Getting Started
 
 1. **Clone the repository**
    
@@ -73,9 +69,8 @@ Smart-Chat-Assistant/
   - Toggle light/dark themes.
   - Clear conversation with the ✨ "Clear Chat" button.
 
----
 
-**🔐 API Info**
+## 🔐 API Info
 - LLM API Endpoint
    ```bash
    https://backend.buildpicoapps.com/aero/run/llm-api?pk=YOUR_API_KEY
@@ -83,15 +78,12 @@ Smart-Chat-Assistant/
 - Replace the key in main.js to activate the assistant.
 - ⚠️ Important: Avoid exposing your API key in public repositories or frontend deployments.
 
----
-
-**🎤 Voice Recognition Support**
+## 🎤 Voice Recognition Support
 - Uses Web Speech API
 - Supported in Chrome and most modern browsers
 - Make sure you allow microphone access when prompted
 
----
-**📸 Demo & Screenshots**
+# 📸 Demo & Screenshots
 - 💡 Add screenshots to the /screenshots/ folder and replace the links below.
 - 💡 Light Mode
   
@@ -101,18 +93,17 @@ Smart-Chat-Assistant/
   
 	![](https://github.com/lohi-cell/gemini-ai-browser-ui/blob/ba683b71a5a96475d56a0e13f1ac22a496e175a0/Screenshot%202025-08-01%20204055.png)
 
----
-**📦 Dependencies**
+# 📦 Dependencies
 - Google Fonts
 - Material Icons
 - Web Speech API (built-in browser support)
----
-**📌 Notes**
+  
+# 📌 Notes
 - Chat history is stored in your browser via localStorage.
 - Type /clear to reset the chat manually.
 - No backend or external database required — 100% client-side!
----
-**🧑‍💻 Contributing**
+
+# 🧑‍💻 Contributing
 - Contributions are always welcome!
 ✅ **How to Contribute**
 1. Fork the repository
@@ -121,14 +112,14 @@ Smart-Chat-Assistant/
 4. Push your branch
 5. Open a pull request and describe your changes.
  
-**📝 Suggestions Welcome**
+## 📝 Suggestions Welcome
 - If you encounter bugs or have ideas to improve the assistant, open an Issue or submit a PR.
----
-**📄 License**
+  
+# 📄 License
 - This project is licensed under the MIT License.
 - Feel free to use, fork, and distribute!
----
-**🙌 Acknowledgements**
+  
+## 🙌 Acknowledgements
 - Made with ❤️ by devangjain999
 - Thanks to open LLM APIs and browser-native voice technologies.
 ---
