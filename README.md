@@ -1,6 +1,13 @@
+
 # 🤖 Smart Chat Assistant
 
+
 A sleek, responsive, and voice-enabled web-based chat assistant powered by a Large Language Model (LLM) API. This project integrates a modern UI, dark mode toggle, voice input/output, chat history via local storage, and real-time typing indicators — delivering a truly intuitive and engaging assistant right in your browser.
+
+
+### Live Deployment Link : 
+[View Project](https://chat-assistant-gray.vercel.app/)
+
 
 
 ## 🚀 Features
@@ -105,6 +112,7 @@ Smart-Chat-Assistant/
 
 # 🧑‍💻 Contributing
 - Contributions are always welcome!
+
 ✅ **How to Contribute**
 1. Fork the repository
 2. Create a new feature branch
@@ -123,6 +131,3 @@ Smart-Chat-Assistant/
 - Made with ❤️ by devangjain999
 - Thanks to open LLM APIs and browser-native voice technologies.
 ---
-
-
-
