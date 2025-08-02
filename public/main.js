@@ -10,8 +10,9 @@ const listeningIndicator = document.getElementById("listeningIndicator");
 const welcomeMessage = document.getElementById("welcomeMessage");
 
 // === API Keys (replace with your own if needed) ===
-const apiKey = "v1-Z0FBQUFBQm5HUEtMSjJkakVjcF9IQ0M0VFhRQ0FmSnNDSHNYTlJSblE0UXo1Q3RBcjFPcl9YYy1OZUhteDZWekxHdWRLM1M1alNZTkJMWEhNOWd4S1NPSDBTWC12M0U2UGc9PQ==";
-const defaultAPI = `https://backend.buildpicoapps.com/aero/run/llm-api?pk=${apiKey}`;
+
+const defaultAPI = "http://localhost:3000/api/chat";
+
 
 // === Welcome Message Management ===
 function showWelcomeMessage() {
@@ -143,7 +144,7 @@ sendButton.addEventListener("click", async () => {
     });
 
     const data = await response.json();
-    const reply = data.status === "success" ? data.text : "Error getting response.";
+    const reply = data.text || "Error getting response.";
     displayMessage(reply, false);
     saveMessage(reply, false);
     speak(reply);
