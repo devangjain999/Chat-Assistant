@@ -1,3 +1,4 @@
+
 // === DOM Elements ===
 const chatbox = document.getElementById("chatbox");
 const chatInput = document.getElementById("chatInput");
@@ -8,6 +9,8 @@ const themeToggle = document.getElementById("toggleTheme");
 const typingIndicator = document.getElementById("typingIndicator");
 const listeningIndicator = document.getElementById("listeningIndicator");
 const welcomeMessage = document.getElementById("welcomeMessage");
+const stopSpeechButton = document.getElementById("stopSpeechButton");
+const cursorTrailContainer = document.getElementById("cursor-trail");
 
 // === API Keys (replace with your own if needed) ===
 const apiKey = "v1-Z0FBQUFBQm5HUEtMSjJkakVjcF9IQ0M0VFhRQ0FmSnNDSHNYTlJSblE0UXo1Q3RBcjFPcl9YYy1OZUhteDZWekxHdWRLM1M1alNZTkJMWEhNOWd4S1NPSDBTWC12M0U2UGc9PQ==";
@@ -31,7 +34,7 @@ function checkWelcomeVisibility() {
   }
 }
 
-// === Load Chat History ===
+// === Load Chat History from localStorage ===
 function loadHistory() {
   const saved = JSON.parse(localStorage.getItem("chatHistory") || "[]");
   saved.forEach(({ message, sender, time }) => {
@@ -39,7 +42,7 @@ function loadHistory() {
   });
 }
 
-// === Save Chat History ===
+// === Save Chat Message to localStorage ===
 function saveMessage(message, isUser) {
   const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const chatHistory = JSON.parse(localStorage.getItem("chatHistory") || "[]");
@@ -47,14 +50,28 @@ function saveMessage(message, isUser) {
   localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
 }
 
-// === Display Message ===
+// === Display a message in chatbox ===
 function displayMessage(message, isUser, time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })) {
   hideWelcomeMessage();
   const msgElem = document.createElement("div");
   msgElem.className = `chat-message ${isUser ? "user-message" : "assistant-message"}`;
-  msgElem.innerHTML = `${message}<div class="timestamp">${time}</div>`;
+  // Escape HTML to prevent injection
+  msgElem.innerHTML = `${escapeHTML(message)}<div class="timestamp">${time}</div>`;
   chatbox.appendChild(msgElem);
   chatbox.scrollTop = chatbox.scrollHeight;
+}
+
+// Escape HTML helper to avoid injection:
+function escapeHTML(str) {
+  return str.replace(/[&<>"']/g, function(match) {
+    return ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[match];
+  });
 }
 
 // === Clear Chat ===
@@ -69,15 +86,16 @@ clearButton.addEventListener("click", () => {
   showWelcomeMessage();
 });
 
-// === Voice Input ===
-const recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-if (recognition) {
-  const mic = new recognition();
+// === Voice Input (Web Speech API) ===
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let mic;
+if (SpeechRecognition) {
+  mic = new SpeechRecognition();
   mic.lang = "en-US";
   mic.interimResults = false;
   
   mic.onstart = () => {
-    listeningIndicator.style.display = "block";
+    listeningIndicator.style.display = "inline";
   };
   
   mic.onresult = e => {
@@ -94,19 +112,28 @@ if (recognition) {
     listeningIndicator.style.display = "none";
   };
   
-  voiceButton.addEventListener("click", () => mic.start());
+  voiceButton.addEventListener("click", () => {
+    try {
+      mic.start();
+    } catch (e) {
+      // If mic is already started ignore
+    }
+  });
+} else {
+  voiceButton.style.display = "none"; // Hide voice button if unsupported
 }
 
-// === Speech Output ===
+// === Speech Output (Web SpeechSynthesis API) ===
 function speak(text) {
+  if (!('speechSynthesis' in window)) return;
   const utterance = new SpeechSynthesisUtterance(text);
-  
-  // Show the stop button when speech starts
+  utterance.rate = 1;
+  utterance.pitch = 1;
+
   utterance.onstart = () => {
-    stopSpeechButton.style.display = "block";
+    stopSpeechButton.style.display = "inline-block";
   };
 
-  // Hide the stop button when speech ends
   utterance.onend = () => {
     stopSpeechButton.style.display = "none";
   };
@@ -114,13 +141,12 @@ function speak(text) {
   speechSynthesis.speak(utterance);
 }
 
-// === Add listener for the new stop button ===
 stopSpeechButton.addEventListener("click", () => {
-  speechSynthesis.cancel(); // Immediately stops speech
+  speechSynthesis.cancel();
   stopSpeechButton.style.display = "none";
 });
 
-// === Send Message ===
+// === Send Message Handler ===
 sendButton.addEventListener("click", async () => {
   const message = chatInput.value.trim();
   if (!message) return;
@@ -135,6 +161,7 @@ sendButton.addEventListener("click", async () => {
   }
 
   typingIndicator.style.display = "block";
+
   try {
     const response = await fetch(defaultAPI, {
       method: "POST",
@@ -154,7 +181,7 @@ sendButton.addEventListener("click", async () => {
   }
 });
 
-// === Enter Key Shortcut ===
+// Enter key sends message
 chatInput.addEventListener("keydown", e => {
   if (e.key === "Enter") sendButton.click();
 });
@@ -173,8 +200,73 @@ function toggleTheme() {
 }
 
 themeToggle.addEventListener("click", toggleTheme);
+
+// === Startup ===
 window.addEventListener("DOMContentLoaded", () => {
   applySavedTheme();
   loadHistory();
   checkWelcomeVisibility();
 });
+
+// === Logout Placeholder Function ===
+function logout() {
+  alert("Logout clicked! Implement your logout logic.");
+}
+
+// === Enhanced Snake Cursor Trail Implementation ===
+(() => {
+  const trailLength = 12; // Number of particles in the trail
+  const particles = [];
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+
+  // Sizes for particles cycling
+  const sizes = ["large", "medium", "small"];
+
+  // Create particles
+  for (let i = 0; i < trailLength; i++) {
+    const particle = document.createElement("span");
+    particle.classList.add("cursor-trail-particle");
+    // Assign sizes cycling for layered effect
+    particle.classList.add(sizes[i % sizes.length]);
+    cursorTrailContainer.appendChild(particle);
+    particles.push({
+      el: particle,
+      x: mouseX,
+      y: mouseY,
+      targetX: mouseX,
+      targetY: mouseY,
+      sizeClass: sizes[i % sizes.length],
+      opacity: 0.8 - i * (0.05), // decreasing opacity for tail effect
+      scale: 1 - i * 0.05, // slight scaling for smooth tapering
+    });
+  }
+
+  // Update mouse position on move
+  window.addEventListener("mousemove", e => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
+  // Animation loop for smooth snake effect
+  function animate() {
+    let prevX = mouseX;
+    let prevY = mouseY;
+
+    particles.forEach((particle, index) => {
+      // Move particle toward previous position with easing
+      particle.x += (prevX - particle.x) * 0.35;
+      particle.y += (prevY - particle.y) * 0.35;
+      prevX = particle.x;
+      prevY = particle.y;
+
+      // Update styles
+      particle.el.style.transform = `translate3d(${particle.x}px, ${particle.y}px, 0) scale(${particle.scale})`;
+      particle.el.style.opacity = particle.opacity;
+    });
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+})();
