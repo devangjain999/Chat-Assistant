@@ -17,15 +17,17 @@ A sleek, responsive, and voice-enabled web-based chat assistant powered by a lar
 
 📦 Smart-Chat-Assistant/
 📦 Smart-Chat-Assistant/
-├── index.html        # Main HTML UI
-├── style.css         # Light/Dark mode styling
-├── main.js           # Frontend logic: chat, voice, theme, storage
-├── server.js         # Express.js backend to proxy API calls securely
-├── .env              # Stores API key (e.g., LLM_API_KEY=your_key_here)
-├── .gitignore        # Ignore .env and node_modules
-├── package.json      # Node.js dependencies and scripts
-├── README.md         # This file
-└── settings.json     # (Optional) VS Code Live Server settings
+├── public/
+│   ├── index.html      # Main HTML UI
+│   ├── style.css       # Light/Dark mode styling
+│   ├── main.js         # Frontend logic: chat, voice, theme, storage
+│   └── favicon-32x32.png  # (Optional) Favicon for your site
+├── server.js           # Express.js backend to proxy API calls securely
+├── .env                # Stores API key (e.g., API_KEY=your_key_here)
+├── .gitignore          # Ignore .env and node_modules
+├── package.json        # Node.js dependencies and scripts
+├── README.md           # Project documentation
+└── settings.json       # (Optional) VS Code or project settings
 
 
 📸 Demo
