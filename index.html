@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart Chat Assistant</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
 </head>
+
 <body>
   <header class="header">
     <span class="logo">🤖 Chat Assistant</span>
@@ -38,21 +40,26 @@
       <button id="voiceButton" title="Voice Input" aria-label="Voice Input">
         <span class="material-icons">mic</span>
       </button>
-      <button id="stopSpeechButton" title="Stop Speech" aria-label="Stop Speech" style="display: none;">
+     <!-- <button id="stopSpeechButton" title="Stop Speech" aria-label="Stop Speech" style="display: none;">
         <span class="material-icons">volume_off</span>
-      </button>
+      </button>-->
+      <button id="stopSpeechButton" title="Stop Speech" aria-label="Stop Speech" style="display: none;">
+  <span class="material-icons">stop_circle</span>
+</button>
+
       <span id="listeningIndicator" class="listening-indicator" aria-live="polite">Listening...</span>
-      <input id="chatInput" type="text" placeholder="Type your message or use voice..." aria-label="Chat Input" autocomplete="off"/>
+      <input id="chatInput" type="text" placeholder="Type your message or use voice..." aria-label="Chat Input"
+        autocomplete="off" />
       <button id="sendButton" title="Send Message" aria-label="Send Message">
         <span class="material-icons">send</span>
       </button>
     </div>
     <div id="typingIndicator" class="typing-indicator" aria-live="polite">Bot is typing...</div>
   </main>
-
   <!-- Container for snake cursor trail particles -->
   <div id="cursor-trail"></div>
 
   <script src="main.js"></script>
 </body>
+
 </html>

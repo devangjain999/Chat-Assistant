@@ -95,8 +95,11 @@ if (SpeechRecognition) {
   mic.interimResults = false;
   
   mic.onstart = () => {
-    listeningIndicator.style.display = "inline";
-  };
+  listeningIndicator.style.display = "inline";
+  voiceButton.style.display = "none";
+  stopSpeechButton.style.display = "inline-block";
+};
+
   
   mic.onresult = e => {
     const transcript = e.results[0][0].transcript;
@@ -109,8 +112,11 @@ if (SpeechRecognition) {
   };
   
   mic.onend = () => {
-    listeningIndicator.style.display = "none";
-  };
+  listeningIndicator.style.display = "none";
+  stopSpeechButton.style.display = "none";
+  voiceButton.style.display = "inline-block";
+};
+
   
   voiceButton.addEventListener("click", () => {
     try {
@@ -119,9 +125,25 @@ if (SpeechRecognition) {
       // If mic is already started ignore
     }
   });
+  stopSpeechButton.addEventListener("click", () => {
+  if (mic && mic.stop) {
+    mic.stop(); // Manually stop recording
+  }
+
+  // UI updates handled in mic.onend
+  stopSpeechButton.style.display = "none";
+  voiceButton.style.display = "inline-block";
+  listeningIndicator.style.display = "none";
+});
+
 } else {
   voiceButton.style.display = "none"; // Hide voice button if unsupported
 }
+stopSpeechButton.addEventListener("click", () => {
+  if (mic) {
+    mic.stop(); // Stop the mic manually
+  }
+});
 
 // === Speech Output (Web SpeechSynthesis API) ===
 function speak(text) {

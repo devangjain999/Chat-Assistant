@@ -178,6 +178,25 @@ body.dark .bot-message, body.dark .assistant-message {
   text-align: right;
 }
 
+
+
+#stopSpeechButton {
+  background-color: #8c4af6;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, background-color 0.3s;
+  display: flex;
+  margin: 0 5px;
+}
+
+
+
+
 /* Input Area */
 .input-area {
   display: flex;
