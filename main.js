@@ -122,7 +122,7 @@ if (SpeechRecognition) {
     try {
       mic.start();
     } catch (e) {
-      // If mic is already started ignore
+      
     }
   });
   stopSpeechButton.addEventListener("click", () => {
