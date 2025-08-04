@@ -127,7 +127,7 @@ if (SpeechRecognition) {
   });
   stopSpeechButton.addEventListener("click", () => {
   if (mic && mic.stop) {
-    mic.stop(); // Manually stop recording
+    mic.stop(); 
   }
 
   // UI updates handled in mic.onend
@@ -232,6 +232,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 // === Logout Placeholder Function ===
 function logout() {
+     window.location.href = "login.html";
   alert("Logout clicked! Implement your logout logic.");
 }
 

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Signup - AI Chat Assistant</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="signup.css">
+</head>
+
+<body>
+  <div class="signup-container">
+    <div class="signup-box">
+      <h1 class="logo-title">🤖 AI Chat Assistant</h1>
+
+      <button class="google-btn">
+        <span class="material-icons">account_circle</span> Sign up with Google
+      </button>
+
+      <div class="separator"><span>or</span></div>
+
+      <form class="signup-form" id="signupForm">
+        <!-- Username -->
+        <div class="input-wrapper">
+          <span class="material-icons input-icon">person</span>
+          <input type="text" placeholder="Username" required>
+        </div>
+
+        <!-- Email -->
+        <div class="input-wrapper">
+          <span class="material-icons input-icon">email</span>
+          <input type="email" placeholder="Email" required>
+        </div>
+
+        <!-- Password -->
+        <div class="input-wrapper">
+          <span class="material-icons input-icon">lock</span>
+          <input type="password" id="passwordInput" placeholder="Password" required>
+          <span class="material-icons input-icon toggle-eye" id="togglePasswordIcon">visibility</span>
+        </div>
+
+
+        <a href="./index.html"><button type="submit" class="submit-btn">Sign Up</button></a>
+      </form>
+
+
+      <p class="login-note">Already have an account? <a href="./login.html">Log in</a></p>
+    </div>
+  </div>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f4fc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .signup-container {
+      width: 100%;
+      max-width: 400px;
+      background-color: white;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(140, 74, 246, 0.1);
+    }
+
+    .logo-title {
+      text-align: center;
+      color: #8c4af6;
+      margin-bottom: 1.5rem;
+    }
+
+    .google-btn {
+      width: 100%;
+      background-color: #8c4af6;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 0.75rem;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .google-btn:hover {
+      background-color: #7a3fe0;
+    }
+
+    .separator {
+      text-align: center;
+      margin: 1.5rem 0;
+      color: #888;
+      position: relative;
+    }
+
+    .separator::before,
+    .separator::after {
+      content: '';
+      height: 1px;
+      background: #ccc;
+      width: 40%;
+      position: absolute;
+      top: 50%;
+    }
+
+    .separator::before {
+      left: 0;
+    }
+
+    .separator::after {
+      right: 0;
+    }
+
+    .signup-form input {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background-color: #8c4af6;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 0.75rem;
+      font-size: 1rem;
+      margin-top: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .submit-btn:hover {
+      background-color: #7a3fe0;
+    }
+
+    .login-note {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .login-note a {
+      color: #8c4af6;
+      text-decoration: none;
+    }
+
+    .input-wrapper {
+      position: relative;
+      width: 100%;
+      margin: 0.5rem 0;
+    }
+
+    .input-wrapper input {
+      width: 80%;
+      padding: 0.75rem 2.5rem 0.75rem 2.5rem;
+      /* left & right padding for icons */
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .input-icon {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #8c4af6;
+      pointer-events: none;
+
+    }
+
+    .input-icon:first-of-type {
+      left: 15px;
+    }
+
+    .input-wrapper .toggle-eye {
+      right: 15px;
+      cursor: pointer;
+    }
+
+    .toggle-eye {
+      right: 15px;
+      left: auto;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+  </style>
+  <script>
+    const passwordInput = document.getElementById("passwordInput");
+    const togglePasswordIcon = document.getElementById("togglePasswordIcon");
+   
+    togglePasswordIcon.addEventListener("click", () => {
+      const isPassword = passwordInput.type === "password";
+      passwordInput.type = isPassword ? "text" : "password";
+      togglePasswordIcon.textContent = isPassword ? "visibility_off" : "visibility";
+    });
+
+
+
+
+  </script>
+
+
+
+</body>
+
+</html>
