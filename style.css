@@ -119,19 +119,10 @@ body.dark .container {
   flex-direction: column;
   gap: 10px;
   background-color: var(--chat-bg);
-  scrollbar-width: thin;
-  scrollbar-color: #6200EA44 transparent;
 }
 
 .chatbox::-webkit-scrollbar {
-  width: 8px;
-}
-.chatbox::-webkit-scrollbar-track {
-  background: transparent;
-}
-.chatbox::-webkit-scrollbar-thumb {
-  background-color: #6200EA44;
-  border-radius: 4px;
+  display: none;
 }
 
 .chat-message {
