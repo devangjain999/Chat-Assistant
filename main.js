@@ -292,3 +292,34 @@ function logout() {
 
   animate();
 })();
+
+
+// History Sidebar
+
+const sidebar = document.getElementById('sidebar');
+const toggleSidebarBtn = document.getElementById('toggleSidebar');
+
+toggleSidebarBtn.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+});
+
+// history button
+function updateHistorySidebar() {
+  const historyList = document.getElementById("historyList");
+  historyList.innerHTML = "";
+
+  const chats = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+  if (chats.length === 0) return;
+
+  const chatItem = document.createElement("button");
+  chatItem.classList.add("history-item");
+  chatItem.textContent = "Chat " + new Date().toLocaleString();
+  chatItem.addEventListener("click", () => {
+    // Reload chat history or session logic (optional enhancement)
+    loadHistory();
+  });
+
+  historyList.appendChild(chatItem);
+}
+
+
