@@ -12,6 +12,23 @@ const welcomeMessage = document.getElementById("welcomeMessage");
 const stopSpeechButton = document.getElementById("stopSpeechButton");
 const cursorTrailContainer = document.getElementById("cursor-trail");
 
+
+// loader creation
+
+
+ const loader=document.createElement("div");
+loader.className="loader";
+const thinkingDots = document.createElement("div");
+thinkingDots.className="thinking-dots";
+for(let i=0;i<3;i++){
+  const span=document.createElement("span");
+  thinkingDots.appendChild(span);
+}
+loader.appendChild(thinkingDots); 
+thinkingDots.classList.remove("theme");
+
+
+
 // === API Keys (replace with your own if needed) ===
 const apiKey = "v1-Z0FBQUFBQm5HUEtMSjJkakVjcF9IQ0M0VFhRQ0FmSnNDSHNYTlJSblE0UXo1Q3RBcjFPcl9YYy1OZUhteDZWekxHdWRLM1M1alNZTkJMWEhNOWd4S1NPSDBTWC12M0U2UGc9PQ==";
 const defaultAPI = `https://backend.buildpicoapps.com/aero/run/llm-api?pk=${apiKey}`;
@@ -182,7 +199,8 @@ sendButton.addEventListener("click", async () => {
     return;
   }
 
-  typingIndicator.style.display = "block";
+ chatbox.appendChild(loader);
+  chatbox.scrollTop = chatbox.scrollHeight;
 
   try {
     const response = await fetch(defaultAPI, {
@@ -199,7 +217,7 @@ sendButton.addEventListener("click", async () => {
   } catch (err) {
     displayMessage("There was an error. Please try again.", false);
   } finally {
-    typingIndicator.style.display = "none";
+    chatbox.removeChild(loader);
   }
 });
 
@@ -219,7 +237,14 @@ function toggleTheme() {
   const newTheme = currentTheme === "dark" ? "light" : "dark";
   document.documentElement.setAttribute("data-theme", newTheme);
   localStorage.setItem("theme", newTheme);
+  thinkingDots.classList.toggle("theme");
 }
+
+function applyToggleThinking(){
+const presentTheme=localStorage.getItem("theme");
+if(presentTheme==="dark")
+  thinkingDots.classList.add("theme");
+};
 
 themeToggle.addEventListener("click", toggleTheme);
 
@@ -228,6 +253,7 @@ window.addEventListener("DOMContentLoaded", () => {
   applySavedTheme();
   loadHistory();
   checkWelcomeVisibility();
+  applyToggleThinking();
 });
 
 // === Logout Placeholder Function ===
