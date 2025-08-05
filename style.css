@@ -195,6 +195,25 @@ body {
   transform: translateY(-1px);
 }
 
+.newChat {
+  width: 90%;
+  margin: 10px auto;
+  padding: 10px 15px;
+  background-color: #4CAF50; 
+  color: white;             
+  border: none;              
+  border-radius: 5px;       
+  cursor: pointer;           
+  font-size: 16px;           
+  display: block;           
+  transition: background-color 0.3s ease; 
+}
+
+.newChat:hover {
+  background-color: #37923b; 
+}
+
+
 /* ===== HEADER ===== */
 .header {
   position: fixed;
