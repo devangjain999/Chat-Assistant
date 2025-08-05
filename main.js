@@ -318,3 +318,169 @@ function logout() {
 
   animate();
 })();
+
+
+// History Sidebar
+
+const sidebar = document.getElementById('sidebar');
+const toggleSidebarBtn = document.getElementById('toggleSidebar');
+
+toggleSidebarBtn.addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+});
+
+// history button
+
+// === Chat History Management ===
+
+// Initialize chat history if not exists
+function initializeChatHistory() {
+  if (!localStorage.getItem("chatSessions")) {
+    localStorage.setItem("chatSessions", JSON.stringify([]));
+  }
+}
+
+// Save current chat session
+function saveCurrentChat() {
+  const chatContent = document.getElementById("chatbox").innerHTML;
+  const chatTitle = prompt("Enter a title for this chat:", 
+                         `Chat ${new Date().toLocaleString()}`) || 
+                         `Chat ${new Date().toLocaleString()}`;
+  
+  const chats = JSON.parse(localStorage.getItem("chatSessions") || "[]");
+  const newChat = {
+    id: Date.now(),
+    title: chatTitle,
+    content: chatContent,
+    timestamp: new Date().toISOString(),
+    messages: [] // Store individual messages for compatibility
+  };
+
+  // Save all messages from current chat
+  const messageElements = chatbox.querySelectorAll('.chat-message');
+  messageElements.forEach(msg => {
+    const isUser = msg.classList.contains('user-message');
+    const message = msg.textContent.replace(/^\d{1,2}:\d{2}\s[AP]M$/, '').trim();
+    const time = msg.querySelector('.timestamp')?.textContent || new Date().toLocaleTimeString();
+    newChat.messages.push({ message, sender: isUser ? 'user' : 'bot', time });
+  });
+
+  chats.unshift(newChat); 
+  localStorage.setItem("chatSessions", JSON.stringify(chats));
+  updateHistorySidebar();
+  
+  // Show confirmation
+  const confirmation = document.createElement("div");
+  confirmation.className = "save-confirmation";
+  confirmation.textContent = "Chat saved!";
+  document.body.appendChild(confirmation);
+  setTimeout(() => confirmation.remove(), 2000);
+}
+
+// Load a specific chat session
+function loadChat(id) {
+  const chats = JSON.parse(localStorage.getItem("chatSessions") || "[]");
+  const chat = chats.find(c => c.id === id);
+  
+  if (!chat) {
+    console.error("Chat not found:", id);
+    return;
+  }
+
+  // Clear current chat
+  chatbox.innerHTML = chat.content || "<p>No content in this chat.</p>";
+  
+  // Restore messages to the main history if needed
+  if (chat.messages && chat.messages.length > 0) {
+    localStorage.setItem("chatHistory", JSON.stringify(chat.messages));
+  }
+  
+  // Scroll to bottom
+  chatbox.scrollTop = chatbox.scrollHeight;
+  hideWelcomeMessage();
+}
+
+// Update history sidebar
+function updateHistorySidebar() {
+  const historyList = document.getElementById("historyList");
+  historyList.innerHTML = "";
+
+  const chats = JSON.parse(localStorage.getItem("chatSessions") || "[]");
+  
+  if (chats.length === 0) {
+    const emptyMsg = document.createElement("p");
+    emptyMsg.textContent = "No saved chats yet.";
+    emptyMsg.className = "empty-history";
+    historyList.appendChild(emptyMsg);
+    return;
+  }
+
+  // Sort by timestamp (newest first)
+  chats.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+  chats.forEach((chat) => {
+    const chatItem = document.createElement("button");
+    chatItem.classList.add("history-item");
+    
+    // Create a more informative title with date
+    const chatDate = new Date(chat.timestamp).toLocaleDateString();
+    chatItem.textContent = `${chat.title} (${chatDate})`;
+    chatItem.dataset.id = chat.id;
+
+    chatItem.addEventListener("click", () => {
+      loadChat(chat.id);
+      if (window.innerWidth < 768) {
+        sidebar.classList.remove("open");
+      }
+    });
+
+    // Add delete button
+    const deleteBtn = document.createElement("span");
+    deleteBtn.className = "delete-chat";
+    deleteBtn.innerHTML = "&times;";
+    deleteBtn.title = "Delete this chat";
+    deleteBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      deleteChat(chat.id);
+    });
+    
+    chatItem.appendChild(deleteBtn);
+    historyList.appendChild(chatItem);
+  });
+}
+
+// Delete a chat session
+function deleteChat(id) {
+  if (!confirm("Are you sure you want to delete this chat?")) return;
+  
+  const chats = JSON.parse(localStorage.getItem("chatSessions") || "[]");
+  const updatedChats = chats.filter(chat => chat.id !== id);
+  localStorage.setItem("chatSessions", JSON.stringify(updatedChats));
+  updateHistorySidebar();
+}
+
+// === Initialize ===
+document.addEventListener("DOMContentLoaded", () => {
+  initializeChatHistory();
+  updateHistorySidebar();
+
+  // New Chat Button
+  document.getElementById("newChat").addEventListener("click", () => {
+    chatbox.innerHTML = `
+      <div id="welcomeMessage" class="welcome-message">
+        <div class="welcome-icon">💬</div>
+        <h3>New Chat Started</h3>
+        <p>Begin your conversation here...</p>
+      </div>`;
+    showWelcomeMessage();
+    localStorage.removeItem("chatHistory"); // Clear message history
+  });
+
+  // Add save button to header
+  const headerControls = document.querySelector(".header-controls");
+  const saveButton = document.createElement("button");
+  saveButton.innerHTML = '<span class="material-icons">save</span>';
+  saveButton.title = "Save Chat";
+  saveButton.addEventListener("click", saveCurrentChat);
+  headerControls.prepend(saveButton);
+});

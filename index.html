@@ -11,6 +11,17 @@
 </head>
 
 <body>
+
+  <aside id="sidebar" class="sidebar">
+    <button id="toggleSidebar" class="sidebar-toggle" title="Toggle Sidebar" aria-label="Toggle Sidebar">
+      <span class="material-icons">menu</span>
+    </button>
+    <h2>Chat History</h2>
+    <button id="newChat" class="newChat">New Chat</button>
+    <div id="historyList" class="history-list">
+    </div>
+  </aside>
+
   <header class="header">
     <span class="logo">🤖 Chat Assistant</span>
     <div class="header-controls">
@@ -40,9 +51,9 @@
       <button id="voiceButton" title="Voice Input" aria-label="Voice Input">
         <span class="material-icons">mic</span>
       </button>
-     <!-- <button id="stopSpeechButton" title="Stop Speech" aria-label="Stop Speech" style="display: none;">
+     <button id="stopSpeechButton" title="Stop Speech" aria-label="Stop Speech" style="display: none;">
         <span class="material-icons">volume_off</span>
-      </button>-->
+      </button>
       <button id="stopSpeechButton" title="Stop Speech" aria-label="Stop Speech" style="display: none;">
   <span class="material-icons">stop_circle</span>
 </button>
