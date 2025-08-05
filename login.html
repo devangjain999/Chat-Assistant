@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Login - AI Chat Assistant</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h1 class="logo-title">🤖 AI Chat Assistant</h1>
+
+            <form class="login-form" id="loginForm">
+                <!-- Email -->
+                <div class="input-wrapper">
+                    <span class="material-icons input-icon">email</span>
+                    <input type="email" placeholder="Email" required>
+                </div>
+
+                <!-- Password -->
+                <div class="input-wrapper">
+                    <span class="material-icons input-icon">lock</span>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                    <span class="material-icons input-icon toggle-eye" id="toggleLoginPassword">visibility</span>
+                </div>
+
+                <div class="forgot-password">
+                    <a href="#">Forgot password</a>
+                </div>
+
+                <button type="submit" class="submit-btn">Login</button>
+            </form>
+
+            <p class="signup-note">Don't have an account? <a href="./signup.html">Register now</a></p>
+        </div>
+    </div>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f7f4fc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(140, 74, 246, 0.1);
+        }
+
+        .logo-title {
+            text-align: center;
+            color: #8c4af6;
+            margin-bottom: 2rem;
+        }
+
+        .login-form .input-wrapper {
+            position: relative;
+            width: 100%;
+            margin: 0.75rem 0;
+        }
+
+        .login-form input {
+            width: 80%;
+            padding: 0.75rem 2.5rem 0.75rem 2.5rem;
+            border-radius: 25px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        .input-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8c4af6;
+            pointer-events: none;
+        }
+
+        .input-icon:first-of-type {
+            left: 15px;
+        }
+
+        .toggle-eye {
+            right: 15px;
+            left: auto;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 0.5rem;
+        }
+
+        .forgot-password a {
+            color: #8c4af6;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background-color: #8c4af6;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 0.75rem;
+            font-size: 1rem;
+            margin-top: 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn:hover {
+            background-color: #7a3fe0;
+        }
+
+        .signup-note {
+            text-align: center;
+            margin-top: 1.2rem;
+            font-size: 0.9rem;
+        }
+
+        .signup-note a {
+            color: #8c4af6;
+            text-decoration: none;
+        }
+    </style>
+    <script>
+        const loginPassword = document.getElementById("loginPassword");
+        const toggleLoginPassword = document.getElementById("toggleLoginPassword");
+
+        toggleLoginPassword.addEventListener("click", () => {
+            const isPassword = loginPassword.type === "password";
+            loginPassword.type = isPassword ? "text" : "password";
+            toggleLoginPassword.textContent = isPassword ? "visibility_off" : "visibility";
+        });
+
+
+       
+  document.addEventListener("DOMContentLoaded", function () {
+    const loginForm = document.getElementById("loginForm");
+
+    loginForm.addEventListener("submit", function (e) {
+      e.preventDefault(); 
+      window.location.href = "index.html"; // redirect to homepage
+    });
+  });
+
+
+    </script>
+</body>
+
+</html>
