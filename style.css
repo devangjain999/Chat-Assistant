@@ -389,6 +389,7 @@ body {
   align-self: flex-end;
   margin-left: auto;
   border-bottom-right-radius: var(--radius-sm);
+  position: relative;
 }
 
 .assistant-message {
@@ -403,6 +404,79 @@ body {
   font-size: var(--font-size-xs);
   margin-top: var(--space-xs);
   opacity: 0.7;
+}
+
+/* ===== USER TYPING INDICATOR ===== */
+#user-typing-container {
+  display: flex;
+  align-self: flex-end;
+  margin-left: auto;
+  max-width: 80%;
+  padding: var(--space-md) var(--space-lg);
+  border-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-sm);
+  background-color: var(--primary-color);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+#user-typing-container.visible {
+  opacity: 1;
+}
+
+.user-typing-dots {
+  display: flex;
+  gap: 5px;
+}
+
+.user-typing-dots span {
+  width: 6px;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  animation: pulse 1s infinite ease-in-out;
+  display: inline-block;
+}
+
+.user-typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.user-typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+/* ===== ERROR INDICATOR ===== */
+.user-message.status-failed {
+  padding-right: calc(var(--space-lg) + 25px);
+}
+
+.user-message.status-failed::before {
+  content: 'error_outline';
+  font-family: 'Material Icons';
+  color: var(--error-color);
+  position: absolute;
+  left: -20px; 
+  top: 50%;
+  transform: translateY(-50%);
+  text-shadow: none;
+  filter: none;
+}
+
+@keyframes pulseError {
+  0% { transform: translateY(-50%) scale(1); }
+  50% { transform: translateY(-50%) scale(1.1); }
+  100% { transform: translateY(-50%) scale(1); }
 }
 
 /* ===== INPUT AREA ===== */

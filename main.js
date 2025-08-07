@@ -1,4 +1,3 @@
-
 // === DOM Elements ===
 const chatbox = document.getElementById("chatbox");
 const chatInput = document.getElementById("chatInput");
@@ -11,20 +10,19 @@ const listeningIndicator = document.getElementById("listeningIndicator");
 const welcomeMessage = document.getElementById("welcomeMessage");
 const stopSpeechButton = document.getElementById("stopSpeechButton");
 const cursorTrailContainer = document.getElementById("cursor-trail");
+// Removed: const userTypingContainer = document.getElementById("user-typing-container");
 
 
 // loader creation
-
-
- const loader=document.createElement("div");
-loader.className="loader";
+const loader = document.createElement("div");
+loader.className = "loader";
 const thinkingDots = document.createElement("div");
-thinkingDots.className="thinking-dots";
-for(let i=0;i<3;i++){
-  const span=document.createElement("span");
+thinkingDots.className = "thinking-dots";
+for (let i = 0; i < 3; i++) {
+  const span = document.createElement("span");
   thinkingDots.appendChild(span);
 }
-loader.appendChild(thinkingDots); 
+loader.appendChild(thinkingDots);
 thinkingDots.classList.remove("theme");
 
 
@@ -54,28 +52,59 @@ function checkWelcomeVisibility() {
 // === Load Chat History from localStorage ===
 function loadHistory() {
   const saved = JSON.parse(localStorage.getItem("chatHistory") || "[]");
-  saved.forEach(({ message, sender, time }) => {
-    displayMessage(message, sender === "user", time);
+  saved.forEach(({ message, sender, time, status }) => {
+    // When loading from history, we always show the final message
+    displayMessage(message, sender === "user", time, status);
   });
 }
 
 // === Save Chat Message to localStorage ===
-function saveMessage(message, isUser) {
-  const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+function saveMessage(message, isUser, status) {
+  const time = new Date().toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit'
+  });
   const chatHistory = JSON.parse(localStorage.getItem("chatHistory") || "[]");
-  chatHistory.push({ message, sender: isUser ? "user" : "bot", time });
+  chatHistory.push({
+    message,
+    sender: isUser ? "user" : "bot",
+    time,
+    status
+  });
   localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
 }
 
+// Function to update the status of the last user message
+function updateLastUserMessageStatus(status) {
+  let chatHistory = JSON.parse(localStorage.getItem("chatHistory") || "[]");
+  const lastUserMessage = chatHistory.findLast(m => m.sender === 'user');
+  if (lastUserMessage) {
+    lastUserMessage.status = status;
+    localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+  }
+}
+
 // === Display a message in chatbox ===
-function displayMessage(message, isUser, time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })) {
+function displayMessage(message, isUser, time = new Date().toLocaleTimeString([], {
+  hour: '2-digit',
+  minute: '2-digit'
+}), status = 'none') {
   hideWelcomeMessage();
   const msgElem = document.createElement("div");
   msgElem.className = `chat-message ${isUser ? "user-message" : "assistant-message"}`;
-  // Escape HTML to prevent injection
-  msgElem.innerHTML = `${escapeHTML(message)}<div class="timestamp">${time}</div>`;
+  
+  if (isUser && status === 'failed') {
+    msgElem.classList.add('status-failed');
+  }
+  
+  msgElem.innerHTML = `
+    <div class="message-content">${escapeHTML(message)}</div>
+    <div class="timestamp">${time}</div>
+  `;
+
   chatbox.appendChild(msgElem);
   chatbox.scrollTop = chatbox.scrollHeight;
+  return msgElem;
 }
 
 // Escape HTML helper to avoid injection:
@@ -110,48 +139,48 @@ if (SpeechRecognition) {
   mic = new SpeechRecognition();
   mic.lang = "en-US";
   mic.interimResults = false;
-  
-  mic.onstart = () => {
-  listeningIndicator.style.display = "inline";
-  voiceButton.style.display = "none";
-  stopSpeechButton.style.display = "inline-block";
-};
 
-  
+  mic.onstart = () => {
+    listeningIndicator.style.display = "inline";
+    voiceButton.style.display = "none";
+    stopSpeechButton.style.display = "inline-block";
+  };
+
+
   mic.onresult = e => {
     const transcript = e.results[0][0].transcript;
     chatInput.value = transcript;
     listeningIndicator.style.display = "none";
   };
-  
+
   mic.onerror = () => {
     listeningIndicator.style.display = "none";
   };
-  
-  mic.onend = () => {
-  listeningIndicator.style.display = "none";
-  stopSpeechButton.style.display = "none";
-  voiceButton.style.display = "inline-block";
-};
 
-  
+  mic.onend = () => {
+    listeningIndicator.style.display = "none";
+    stopSpeechButton.style.display = "none";
+    voiceButton.style.display = "inline-block";
+  };
+
+
   voiceButton.addEventListener("click", () => {
     try {
       mic.start();
     } catch (e) {
-      
+      console.error("Error starting speech recognition:", e);
     }
   });
   stopSpeechButton.addEventListener("click", () => {
-  if (mic && mic.stop) {
-    mic.stop(); 
-  }
+    if (mic && mic.stop) {
+      mic.stop();
+    }
 
-  // UI updates handled in mic.onend
-  stopSpeechButton.style.display = "none";
-  voiceButton.style.display = "inline-block";
-  listeningIndicator.style.display = "none";
-});
+    // UI updates handled in mic.onend
+    stopSpeechButton.style.display = "none";
+    voiceButton.style.display = "inline-block";
+    listeningIndicator.style.display = "none";
+  });
 
 } else {
   voiceButton.style.display = "none"; // Hide voice button if unsupported
@@ -185,37 +214,87 @@ stopSpeechButton.addEventListener("click", () => {
   stopSpeechButton.style.display = "none";
 });
 
+// === User Typing Indicator Logic ===
+chatInput.addEventListener('input', () => {
+  let userTypingContainer = document.getElementById("user-typing-container");
+  
+  if (chatInput.value.trim().length > 0 && !userTypingContainer) {
+    // Create and append the typing indicator when the user starts typing
+    userTypingContainer = document.createElement("div");
+    userTypingContainer.id = "user-typing-container";
+    userTypingContainer.className = "visible";
+    userTypingContainer.innerHTML = `
+      <div class="user-typing-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    `;
+    chatbox.appendChild(userTypingContainer);
+    chatbox.scrollTop = chatbox.scrollHeight; // Scroll to show the indicator
+  } else if (chatInput.value.trim().length === 0 && userTypingContainer) {
+    // Remove the typing indicator when the input is empty
+    userTypingContainer.remove();
+  }
+});
+
+
 // === Send Message Handler ===
 sendButton.addEventListener("click", async () => {
   const message = chatInput.value.trim();
   if (!message) return;
 
-  displayMessage(message, true);
-  saveMessage(message, true);
+  // Immediately display the user's message
+  const userMsgElem = displayMessage(message, true, undefined, 'pending');
+  saveMessage(message, true, 'pending');
   chatInput.value = "";
+  
+  // Remove the dynamic typing indicator
+  const userTypingContainer = document.getElementById("user-typing-container");
+  if (userTypingContainer) {
+    userTypingContainer.remove();
+  }
 
   if (message.toLowerCase() === "/clear") {
     clearButton.click();
     return;
   }
 
- chatbox.appendChild(loader);
+  // The bot's typing indicator for when it's about to respond
+  chatbox.appendChild(loader);
   chatbox.scrollTop = chatbox.scrollHeight;
 
   try {
     const response = await fetch(defaultAPI, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: message }),
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        prompt: message
+      }),
     });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
 
     const data = await response.json();
     const reply = data.status === "success" ? data.text : "Error getting response.";
     displayMessage(reply, false);
-    saveMessage(reply, false);
+    saveMessage(reply, false, 'none');
+
+    // On success, update the status to delivered
+    userMsgElem.dataset.status = 'delivered';
+    updateLastUserMessageStatus('delivered');
+
     speak(reply);
   } catch (err) {
     displayMessage("There was an error. Please try again.", false);
+    // On error, add the 'status-failed' class to the existing message element
+    userMsgElem.classList.add('status-failed');
+    updateLastUserMessageStatus('failed');
+    console.error("API call failed:", err);
   } finally {
     chatbox.removeChild(loader);
   }
@@ -240,10 +319,10 @@ function toggleTheme() {
   thinkingDots.classList.toggle("theme");
 }
 
-function applyToggleThinking(){
-const presentTheme=localStorage.getItem("theme");
-if(presentTheme==="dark")
-  thinkingDots.classList.add("theme");
+function applyToggleThinking() {
+  const presentTheme = localStorage.getItem("theme");
+  if (presentTheme === "dark")
+    thinkingDots.classList.add("theme");
 };
 
 themeToggle.addEventListener("click", toggleTheme);
@@ -258,7 +337,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 // === Logout Placeholder Function ===
 function logout() {
-     window.location.href = "login.html";
+  window.location.href = "login.html";
   alert("Logout clicked! Implement your logout logic.");
 }
 
@@ -344,10 +423,10 @@ function initializeChatHistory() {
 // Save current chat session
 function saveCurrentChat() {
   const chatContent = document.getElementById("chatbox").innerHTML;
-  const chatTitle = prompt("Enter a title for this chat:", 
-                         `Chat ${new Date().toLocaleString()}`) || 
-                         `Chat ${new Date().toLocaleString()}`;
-  
+  const chatTitle = prompt("Enter a title for this chat:",
+      `Chat ${new Date().toLocaleString()}`) ||
+    `Chat ${new Date().toLocaleString()}`;
+
   const chats = JSON.parse(localStorage.getItem("chatSessions") || "[]");
   const newChat = {
     id: Date.now(),
@@ -363,13 +442,19 @@ function saveCurrentChat() {
     const isUser = msg.classList.contains('user-message');
     const message = msg.textContent.replace(/^\d{1,2}:\d{2}\s[AP]M$/, '').trim();
     const time = msg.querySelector('.timestamp')?.textContent || new Date().toLocaleTimeString();
-    newChat.messages.push({ message, sender: isUser ? 'user' : 'bot', time });
+    const status = isUser ? msg.dataset.status || 'none' : 'none';
+    newChat.messages.push({
+      message,
+      sender: isUser ? 'user' : 'bot',
+      time,
+      status
+    });
   });
 
-  chats.unshift(newChat); 
+  chats.unshift(newChat);
   localStorage.setItem("chatSessions", JSON.stringify(chats));
   updateHistorySidebar();
-  
+
   // Show confirmation
   const confirmation = document.createElement("div");
   confirmation.className = "save-confirmation";
@@ -382,7 +467,7 @@ function saveCurrentChat() {
 function loadChat(id) {
   const chats = JSON.parse(localStorage.getItem("chatSessions") || "[]");
   const chat = chats.find(c => c.id === id);
-  
+
   if (!chat) {
     console.error("Chat not found:", id);
     return;
@@ -390,12 +475,19 @@ function loadChat(id) {
 
   // Clear current chat
   chatbox.innerHTML = chat.content || "<p>No content in this chat.</p>";
-  
+
   // Restore messages to the main history if needed
   if (chat.messages && chat.messages.length > 0) {
     localStorage.setItem("chatHistory", JSON.stringify(chat.messages));
+    chatbox.innerHTML = "";
+    chat.messages.forEach(({
+      message,
+      sender,
+      time,
+      status
+    }) => displayMessage(message, sender === 'user', time, status));
   }
-  
+
   // Scroll to bottom
   chatbox.scrollTop = chatbox.scrollHeight;
   hideWelcomeMessage();
@@ -407,7 +499,7 @@ function updateHistorySidebar() {
   historyList.innerHTML = "";
 
   const chats = JSON.parse(localStorage.getItem("chatSessions") || "[]");
-  
+
   if (chats.length === 0) {
     const emptyMsg = document.createElement("p");
     emptyMsg.textContent = "No saved chats yet.";
@@ -422,7 +514,7 @@ function updateHistorySidebar() {
   chats.forEach((chat) => {
     const chatItem = document.createElement("button");
     chatItem.classList.add("history-item");
-    
+
     // Create a more informative title with date
     const chatDate = new Date(chat.timestamp).toLocaleDateString();
     chatItem.textContent = `${chat.title} (${chatDate})`;
@@ -444,7 +536,7 @@ function updateHistorySidebar() {
       e.stopPropagation();
       deleteChat(chat.id);
     });
-    
+
     chatItem.appendChild(deleteBtn);
     historyList.appendChild(chatItem);
   });
