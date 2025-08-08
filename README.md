@@ -90,16 +90,6 @@ Smart-Chat-Assistant/
 - Supported in Chrome and most modern browsers
 - Make sure you allow microphone access when prompted
 
-# 📸 Demo & Screenshots
-- 💡 Add screenshots to the /screenshots/ folder and replace the links below.
-- 💡 Light Mode
-  
-  ![](https://github.com/lohi-cell/gemini-ai-browser-ui/blob/b3437805284aa2500b605b827cffa4e3814069d4/Screenshot%202025-08-01%20204035.png)
-  
-- 🌙 Dark Mode
-  
-	![](https://github.com/lohi-cell/gemini-ai-browser-ui/blob/ba683b71a5a96475d56a0e13f1ac22a496e175a0/Screenshot%202025-08-01%20204055.png)
-
 # 📦 Dependencies
 - Google Fonts
 - Material Icons
